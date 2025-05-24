@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion to Music</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root {
+            --primary: #60A5FA;
+            --secondary: #1E3A8A;
+            --dark: #121212;
+            --darker: #0a0a0a;
+            --light: #ffffff;
+            --accent: #9333EA;
+        }
+        
+        body {
+            background: var(--dark);
+            color: var(--light);
+            font-family: 'Poppins', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(30, 58, 138, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(96, 165, 250, 0.1) 0%, transparent 20%);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 90%;
+            padding: 40px 20px;
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(96, 165, 250, 0.15);
+            animation: fadeInDown 1s ease;
+        }
+        
+        p {
+            margin-bottom: 25px;
+            font-size: 1.1em;
+            opacity: 0.9;
+            animation: fadeIn 1.2s ease;
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group:hover {
+            transform: translateY(-2px);
+        }
+        
+        select, textarea {
+            width: 100%;
+            background: var(--darker);
+            color: var(--light);
+            border: 2px solid rgba(96, 165, 250, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3), 0 5px 15px rgba(0, 0, 0, 0.3);
+            outline: none;
+        }
+        
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: url('data:image/svg+xml;utf8,<svg fill="%2360A5FA" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 15px center var(--darker);
+            background-size: 24px;
+            cursor: pointer;
+        }
+        
+        textarea {
+            height: 120px;
+            resize: none;
+        }
+        
+        .pulse-button {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: var(--light);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(30, 58, 138, 0.4);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1.4s ease;
+        }
+        
+        .pulse-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.6);
+        }
+        
+        .pulse-button:active {
+            transform: translateY(1px);
+        }
+        
+        .pulse-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: transform 0.6s, opacity 0.6s;
+        }
+        
+        .pulse-button:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        
+        #result {
+            margin-top: 30px;
+            width: 100%;
+            animation: fadeIn 1s ease;
+        }
+        
+        .emotion {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-weight: 600;
+            animation: fadeIn 1s ease;
+            background: rgba(10, 10, 10, 0.5);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .songs-container {
+            display: grid;
+            gap: 20px;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .song {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.8s ease;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+        
+        body[data-theme="light"] .song {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 50, 0.1);
+        }
+        
+        body[data-theme="light"] .song:hover {
+            background: #ffffff;
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        body[data-theme="light"] .error {
+            background: rgba(255, 85, 85, 0.05);
+        }
+        
+        body[data-theme="light"] select, 
+        body[data-theme="light"] textarea {
+            box-shadow: 0 5px 15px rgba(0, 0, 50, 0.05);
+        }
+        
+        body[data-theme="light"] .emotion {
+            background: rgba(240, 245, 255, 0.6);
+            box-shadow: 0 5px 15px rgba(0, 0, 50, 0.05);
+        }
+        
+        body[data-theme="light"] audio::-webkit-media-controls-panel {
+            background: rgba(230, 238, 255, 0.9);
+        }
+        
+        @keyframes staggered-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .song:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: rgba(30, 30, 30, 0.9);
+        }
+        
+        .song-info {
+            flex: 3;
+            text-align: left;
+        }
+        
+        .song-info strong {
+            color: var(--primary);
+            font-size: 1.2em;
+        }
+        
+        .song-info p {
+            margin: 8px 0;
+        }
+        
+        .song-link {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .song-link a {
+            color: var(--primary);
+            text-decoration: none;
+            padding: 8px 15px;
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .song-link a:hover {
+            background: var(--primary);
+            color: var(--dark);
+        }
+        
+        audio {
+            width: 100%;
+            margin-top: 10px;
+            height: 40px;
+            border-radius: 20px;
+            outline: none;
+        }
+        
+        audio::-webkit-media-controls-panel {
+            background: rgba(30, 30, 30, 0.9);
+        }
+        
+        .error {
+            color: #ff5555;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 85, 85, 0.1);
+            border-left: 4px solid #ff5555;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        
+        .loading {
+            color: var(--primary);
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .loading-animation {
+            margin: 20px 0;
+        }
+        
+        .loading-animation span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: 0 5px;
+            animation: loading 1.4s infinite ease-in-out both;
+        }
+        
+        .loading-animation span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        
+        .loading-animation span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+        
+        @keyframes loading {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        .music-icon {
+            font-size: 2em;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .background-wave {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 15vh;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.11,140.83,94.17,208.35,82.06,260.54,73.06,314.58,63.65,362.39,80.37Z" fill="%231E3A8A" opacity="0.2"></path></svg>') no-repeat;
+            background-size: cover;
+            animation: wave 18s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes wave {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1000px; }
+        }
+        
+        /* Light theme specific styles */
+        body[data-theme="light"] {
+            color: var(--light);
+        }
+        
+        body[data-theme="light"] h1 {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+        
+        body[data-theme="light"] .pulse-button {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.3);
+        }
+        
+        body[data-theme="light"] .pulse-button:hover {
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.5);
+        }
+        
+        body[data-theme="light"] .theme-switch {
+            background: rgba(230, 238, 255, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 50, 0.1);
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .song {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .song-link {
+                text-align: left;
+                margin-top: 15px;
+                width: 100%;
+            }
+            
+            .song-link a {
+                display: block;
+                text-align: center;
+            }
+            
+            .pulse-button {
+                width: 100%;
+            }
+        }
+        
+        /* Theme toggle switch styles */
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 50px;
+            padding: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            animation: fadeIn 1s ease;
+        }
+        
+        .theme-switch button {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.2em;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-switch button.active {
+            color: var(--primary);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="background-wave"></div>
+    
+    <div class="theme-switch">
+        <button id="darkMode" class="active"><i class="fas fa-moon"></i></button>
+        <button id="lightMode"><i class="fas fa-sun"></i></button>
+    </div>
+    
+    <div class="container">
+        <h1 class="animate__animated animate__fadeInDown"><i class="fas fa-music music-icon"></i>Emotion to Music</h1>
+        <p class="animate__animated animate__fadeIn">Choose your music type and enter your feeling to get personalized song recommendations.</p>
+        
+        <div class="input-group animate__animated animate__fadeInUp">
+            <select id="musicType">
+                <option value="Pakistani">Pakistani</option>
+                <option value="Bollywood">Bollywood</option>
+                <option value="Hollywood">Hollywood</option>
+            </select>
+        </div>
+        
+        <div class="input-group animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+            <textarea id="feeling" placeholder="How are you feeling today? Tell us about your mood..."></textarea>
+        </div>
+        
+        <button class="pulse-button animate__animated animate__fadeInUp" onclick="getRecommendations()">
+            <i class="fas fa-search"></i> Get Recommendations
+        </button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Set initial theme to dark
+        document.body.setAttribute('data-theme', 'dark');
+        
+        // Theme switcher
+        document.getElementById('lightMode').addEventListener('click', function() {
+            document.documentElement.style.setProperty('--dark', '#f0f5ff');
+            document.documentElement.style.setProperty('--darker', '#e6eeff');
+            document.documentElement.style.setProperty('--light', '#0f172a');
+            document.documentElement.style.setProperty('--primary', '#3b82f6');
+            document.documentElement.style.setProperty('--secondary', '#1e40af');
+            document.documentElement.style.setProperty('--accent', '#7e22ce');
+            document.body.style.backgroundImage = 'radial-gradient(circle at 10% 20%, rgba(219, 234, 254, 0.4) 0%, transparent 25%), radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.2) 0%, transparent 25%)';
+            document.querySelector('.background-wave').style.opacity = '0.1';
+            document.body.setAttribute('data-theme', 'light');
+            
+            this.classList.add('active');
+            document.getElementById('darkMode').classList.remove('active');
+        });
+        
+        document.getElementById('darkMode').addEventListener('click', function() {
+            document.documentElement.style.setProperty('--dark', '#121212');
+            document.documentElement.style.setProperty('--darker', '#0a0a0a');
+            document.documentElement.style.setProperty('--light', '#ffffff');
+            document.documentElement.style.setProperty('--primary', '#60A5FA');
+            document.documentElement.style.setProperty('--secondary', '#1E3A8A');
+            document.documentElement.style.setProperty('--accent', '#9333EA');
+            document.body.style.backgroundImage = 'radial-gradient(circle at 10% 20%, rgba(30, 58, 138, 0.1) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(96, 165, 250, 0.1) 0%, transparent 20%)';
+            document.querySelector('.background-wave').style.opacity = '0.2';
+            document.body.setAttribute('data-theme', 'dark');
+            
+            this.classList.add('active');
+            document.getElementById('lightMode').classList.remove('active');
+        });
+        
+        async function getRecommendations() {
+            const feeling = document.getElementById('feeling').value.trim();
+            const musicType = document.getElementById('musicType').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!feeling) {
+                resultDiv.innerHTML = '<p class="error animate__animated animate__fadeIn"><i class="fas fa-exclamation-circle"></i> Please enter how you\'re feeling!</p>';
+                return;
+            }
+
+            resultDiv.innerHTML = `
+                <div class="loading animate__animated animate__fadeIn">
+                    <p><i class="fas fa-compact-disc fa-spin"></i> Analyzing your emotion and finding perfect songs...</p>
+                    <div class="loading-animation">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+
+            try {
+                const response = await fetch('http://localhost:5000/detect_emotion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: feeling, music_type: musicType })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="emotion animate__animated animate__fadeIn">
+                            <i class="fas fa-heart-pulse"></i> Detected Emotion: ${data.emotion} | Music Type: ${data.music_type}
+                        </div>
+                    `;
+                    
+                    if (data.status.startsWith("No") || data.status.startsWith("Error")) {
+                        resultDiv.innerHTML += `<p class="error animate__animated animate__fadeIn"><i class="fas fa-exclamation-triangle"></i> ${data.status}</p>`;
+                    } else {
+                        resultDiv.innerHTML += '<h2 class="animate__animated animate__fadeIn">Recommended Songs:</h2>';
+                        resultDiv.innerHTML += '<div class="songs-container"></div>';
+                        
+                        const songsContainer = resultDiv.querySelector('.songs-container');
+                        
+                        data.songs_with_preview.forEach((song, index) => {
+                            const songElement = document.createElement('div');
+                            songElement.className = 'song';
+                            songElement.style.animationDelay = `${0.1 * index}s`;
+                            
+                            songElement.innerHTML = `
+                                <div class="song-info">
+                                    <p><strong>${song.name}</strong> by ${song.artist}</p>
+                                    ${song.preview_url ? `<audio controls src="${song.preview_url}"></audio>` : '<p><i class="fas fa-volume-xmark"></i> (No preview available)</p>'}
+                                </div>
+                                <div class="song-link">
+                                    <a href="${song.url}" target="_blank"><i class="fab fa-spotify"></i> Open in Spotify</a>
+                                </div>
+                            `;
+                            
+                            songsContainer.appendChild(songElement);
+                            
+                            // Trigger animation after a small delay
+                            setTimeout(() => {
+                                songElement.style.animation = `staggered-fade-in 0.5s ease forwards`;
+                            }, 100 * index);
+                        });
+                    }
+                } else {
+                    resultDiv.innerHTML = `<p class="error animate__animated animate__fadeIn"><i class="fas fa-circle-exclamation"></i> ${data.error || 'Error fetching recommendations'}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error animate__animated animate__fadeIn"><i class="fas fa-bug"></i> Error: ${error.message}</p>`;
+            }
+        }
+        
+        // Add animation to text input on focus
+        document.getElementById('feeling').addEventListener('focus', function() {
+            this.parentElement.classList.add('animate__pulse');
+        });
+        
+        document.getElementById('feeling').addEventListener('blur', function() {
+            this.parentElement.classList.remove('animate__pulse');
+        });
+    </script>
+</body>
+</html>

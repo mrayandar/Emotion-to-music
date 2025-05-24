@@ -1,0 +1,96 @@
+{
+    "search_terms": {
+        "Pakistani": {
+            "Happy": [
+                "pakistani pop",
+                "pakistani punjabi super hit",
+                "Pakistani Mujra",
+                "pakistani punjabi dance",
+                "hasan raheem",
+                "Faris shafi",
+                "Ali zafar",
+                "Asim azhar",
+                "Coke studio",
+                "Naseebo Lal",
+                "pakistani punjabi party",
+                "pakistani punjabi upbeat",
+                "pakistani classical dance",
+                "pakistani film songs",
+                "pakistani coke studio upbeat",
+                "pakistani dance",
+                "pashto pop",
+                "pakistani party",
+                "pakistani film upbeat"
+            ],
+            "Sad": [
+                "pakistani sufi",
+                "qawwali",
+                "Zain Zohaib",
+                "pakistani ghazal",
+                "pakistani heartbreak",
+                "coke studio emotional",
+                "pakistani romantic slow",
+                "pashto sad"
+            ]
+        },
+        "Bollywood": {
+            "Happy": [
+                "bollywood dance",
+                "bollywood upbeat",
+                "punjabi super hit",
+                "Honey Singh",
+                "Badshah",
+                "Neha Kakkar",
+                "Cheema",
+                "AP Dhillon",
+                "Real Boss",
+                "Nseeb",
+                "Talvinder",
+                "Dilgit Dosanjh",
+                "bollywood party",
+                "bollywood happy",
+                "hindi pop cheerful",
+                "hindi dance anthem",
+                "bollywood banger",
+                "hindi festive"
+            ],
+            "Sad": [
+                "bollywood heartbreak",
+                "bollywood sad",
+                "bollywood ballad",
+                "hindi emotional",
+                "hindi romantic slow",
+                "hindi sad melody",
+                "bollywood tearjerker",
+                "hindi ghazal"
+            ]
+        },
+        "Hollywood": {
+            "Happy": [
+                "pop upbeat",
+                "dance pop",
+                "party hits",
+                "summer hits",
+                "pop dance",
+                "feel good pop",
+                "pop anthem",
+                "top 40"
+            ],
+            "Sad": [
+                "pop ballad",
+                "sad pop",
+                "acoustic pop",
+                "emotional pop",
+                "slow pop",
+                "heartbreak pop",
+                "melancholy pop",
+                "singer songwriter sad"
+            ]
+        }
+    },
+    "markets": {
+        "Pakistani": "PK",
+        "Bollywood": "IN",
+        "Hollywood": "US"
+    }
+}
